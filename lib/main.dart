@@ -242,10 +242,7 @@ class Elastic extends StatefulWidget {
 }
 
 class _ElasticState extends State<Elastic> {
-  late Color teamColor = Color(
-    widget.preferences.getInt(PrefKeys.teamColor) ??
-        Colors.blueAccent.toARGB32(),
-  );
+  late Color teamColor = Color(Colors.red.toARGB32());
   late FlexSchemeVariant themeVariant =
       FlexSchemeVariant.values.firstWhereOrNull(
         (element) =>

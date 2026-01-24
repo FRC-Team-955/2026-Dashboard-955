@@ -204,11 +204,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
   );
 
   List<Widget> _themeSettings() {
-    Color currentColor = Color(
-      widget.preferences.getInt(PrefKeys.teamColor) ??
-          Colors.blueAccent.toARGB32(),
-    );
-
     // Safety feature to prevent theme variants dropdown from not rendering if the current selection doesn't exist
     List<String>? themeVariantsOverride;
     if (!SettingsDialog.themeVariants.contains(
@@ -228,20 +223,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SizedBox(
-              width: 140,
-              child: UnconstrainedBox(
-                constrainedAxis: Axis.horizontal,
-                child: DialogColorPicker(
-                  onColorPicked: (color) => widget.onColorChanged?.call(color),
-                  label: 'Team Color',
-                  initialColor: currentColor,
-                  defaultColor: Colors.blueAccent,
-                  rowSize: MainAxisSize.max,
-                ),
-              ),
-            ),
-            const VerticalDivider(),
             Flexible(
               child: Column(
                 children: [
