@@ -779,7 +779,7 @@ class _DashboardPageState extends State<DashboardPage>
           ntTopic ??= model.ntConnection.getTopicFromName(topic);
 
           if (ntSubscription == null || ntTopic == null) {
-            model.showInfoNotification(title: name, message: 'Failure');
+            model.showErrorNotification(title: name, message: 'Failure');
           } else {
             if (!model.ntConnection.isTopicPublished(ntTopic)) {
               model.ntConnection.publishTopic(ntTopic!);
