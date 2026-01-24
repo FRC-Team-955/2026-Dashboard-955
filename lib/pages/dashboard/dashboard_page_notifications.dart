@@ -106,7 +106,7 @@ mixin DashboardPageNotifications on DashboardPageViewModel {
       background: colorScheme.surface,
       progressIndicatorBackground: colorScheme.surface,
       progressIndicatorColor: color,
-      width: width,
+      width: width ?? 350,
       height: height,
       position: Alignment.bottomRight,
       toastDuration: toastDuration,
