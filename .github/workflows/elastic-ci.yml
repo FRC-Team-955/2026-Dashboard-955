@@ -120,13 +120,13 @@ jobs:
             artifact-name: Elastic-macOS
             artifact-file: Elastic-macOS.zip
             wpilib: false
-          - os: ubuntu-22.04
-            platform-name: "Linux"
-            platform: "linux"
-            build-path: "build/linux/x64/release/bundle"
-            artifact-name: Elastic-Linux
-            artifact-file: Elastic-Linux.zip
-            wpilib: false
+#          - os: ubuntu-22.04
+#            platform-name: "Linux"
+#            platform: "linux"
+#            build-path: "build/linux/x64/release/bundle"
+#            artifact-name: Elastic-Linux
+#            artifact-file: Elastic-Linux.zip
+#            wpilib: false
 
           # WPILib builds
 #          - os: windows-latest
@@ -235,111 +235,111 @@ jobs:
           path: build/windows/x64/installer
           if-no-files-found: error
 
-  build-web:
-    name: "Build - Web"
-    needs: [formatting-analysis, test]
-    runs-on: "ubuntu-22.04"
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Build for Web
-        uses: ./.github/workflows/elastic-build
-        with:
-          flutter_version: ${{ env.FLUTTER_VERSION }}
-          platform: web
-          is_wpilib: false
-
-      - name: Zip Artifact
-        working-directory: build/web
-        run: zip -r ${{ github.workspace }}/Elastic-Web.zip . --symlinks
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Elastic-Web
-          path: Elastic-Web.zip
-          if-no-files-found: error
-
-      - name: Create SystemCore installer
-        working-directory: .github/ipk_build
-        run: |
-          chmod +x ./build.sh
-          ./build.sh
-
-      - name: Upload SystemCore installer
-        uses: actions/upload-artifact@v4
-        with:
-          name: Elastic-SystemCore
-          path: .github/ipk_build/elastic_dashboard_*.ipk
-          if-no-files-found: error
-
-  github-pages:
-    name: "Upload to GitHub Pages"
-    runs-on: ubuntu-22.04
-    if: ${{ github.repository == 'Gold872/elastic_dashboard' && github.ref == 'refs/heads/main' }}
-    needs: [build-web]
-    steps:
-      - name: Download Web Build
-        uses: actions/download-artifact@v4
-        with:
-          name: Elastic-Web
-
-      - name: Extract Web Build
-        run: unzip Elastic-Web.zip -d Elastic-Web
-
-      - name: Upload GitHub Pages Artifact
-        uses: actions/upload-pages-artifact@v3.0.0
-        with:
-          path: Elastic-Web
-          retention-days: 31
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4.0.2
-
-  upload-release:
-    name: Upload to Release
-    runs-on: ubuntu-22.04
-    needs: [build, build-web]
-    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.upload-release }}
-    steps:
-      - run: mkdir -p artifacts
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-          pattern: Elastic-*
-          merge-multiple: true
-
-      - name: Rename Files
-        working-directory: artifacts
-        run: |
-          ls -al
-          mv Elastic-Windows.zip Elastic-Windows_portable.zip
-          mv elastic_dashboard_*.ipk Elastic-SystemCore.ipk
-
-      - name: Get Draft Release Info
-        id: release_info
-        run: |
-          release_info=$(gh api repos/${{ github.repository }}/releases --jq '[.[] | select(.draft == true)] | sort_by(.created_at) | reverse | first')
-
-          if [ "$release_info" = "null" ]; then
-            echo "No draft release found"
-            exit 1
-          fi
-
-          upload_url=$(echo "$release_info" | jq -r '.upload_url')
-          echo "upload_url=$upload_url" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update Release Assets
-        uses: shogo82148/actions-upload-release-asset@v1
-        with:
-          asset_path: artifacts/*
-          upload_url: ${{ steps.release_info.outputs.upload_url }}
-          overwrite: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#  build-web:
+#    name: "Build - Web"
+#    needs: [formatting-analysis, test]
+#    runs-on: "ubuntu-22.04"
+#
+#    steps:
+#      - name: Checkout repo
+#        uses: actions/checkout@v4
+#
+#      - name: Build for Web
+#        uses: ./.github/workflows/elastic-build
+#        with:
+#          flutter_version: ${{ env.FLUTTER_VERSION }}
+#          platform: web
+#          is_wpilib: false
+#
+#      - name: Zip Artifact
+#        working-directory: build/web
+#        run: zip -r ${{ github.workspace }}/Elastic-Web.zip . --symlinks
+#
+#      - name: Upload artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: Elastic-Web
+#          path: Elastic-Web.zip
+#          if-no-files-found: error
+#
+#      - name: Create SystemCore installer
+#        working-directory: .github/ipk_build
+#        run: |
+#          chmod +x ./build.sh
+#          ./build.sh
+#
+#      - name: Upload SystemCore installer
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: Elastic-SystemCore
+#          path: .github/ipk_build/elastic_dashboard_*.ipk
+#          if-no-files-found: error
+#
+#  github-pages:
+#    name: "Upload to GitHub Pages"
+#    runs-on: ubuntu-22.04
+#    if: ${{ github.repository == 'Gold872/elastic_dashboard' && github.ref == 'refs/heads/main' }}
+#    needs: [build-web]
+#    steps:
+#      - name: Download Web Build
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: Elastic-Web
+#
+#      - name: Extract Web Build
+#        run: unzip Elastic-Web.zip -d Elastic-Web
+#
+#      - name: Upload GitHub Pages Artifact
+#        uses: actions/upload-pages-artifact@v3.0.0
+#        with:
+#          path: Elastic-Web
+#          retention-days: 31
+#
+#      - name: Deploy to GitHub Pages
+#        uses: actions/deploy-pages@v4.0.2
+#
+#  upload-release:
+#    name: Upload to Release
+#    runs-on: ubuntu-22.04
+#    needs: [build, build-web]
+#    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.upload-release }}
+#    steps:
+#      - run: mkdir -p artifacts
+#
+#      - name: Download Artifacts
+#        uses: actions/download-artifact@v4
+#        with:
+#          path: artifacts
+#          pattern: Elastic-*
+#          merge-multiple: true
+#
+#      - name: Rename Files
+#        working-directory: artifacts
+#        run: |
+#          ls -al
+#          mv Elastic-Windows.zip Elastic-Windows_portable.zip
+#          mv elastic_dashboard_*.ipk Elastic-SystemCore.ipk
+#
+#      - name: Get Draft Release Info
+#        id: release_info
+#        run: |
+#          release_info=$(gh api repos/${{ github.repository }}/releases --jq '[.[] | select(.draft == true)] | sort_by(.created_at) | reverse | first')
+#
+#          if [ "$release_info" = "null" ]; then
+#            echo "No draft release found"
+#            exit 1
+#          fi
+#
+#          upload_url=$(echo "$release_info" | jq -r '.upload_url')
+#          echo "upload_url=$upload_url" >> "$GITHUB_OUTPUT"
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Update Release Assets
+#        uses: shogo82148/actions-upload-release-asset@v1
+#        with:
+#          asset_path: artifacts/*
+#          upload_url: ${{ steps.release_info.outputs.upload_url }}
+#          overwrite: true
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
