@@ -792,12 +792,10 @@ class _DashboardPageState extends State<DashboardPage>
       );
     }
 
-    makeNTKeybind(
-      HotKey(LogicalKeyboardKey.keyA),
-      'Auto Chosen',
-      '/Tuning/OperatorDashboard/AutoChosen',
-      true,
-    );
+    makeNTKeybind(HotKey(LogicalKeyboardKey.keyQ), 'ScoringMode: ShootAndPassAutomatic', '/Tuning/OperatorDashboard/ScoringMode/ShootAndPassAutomatic', true);
+    makeNTKeybind(HotKey(LogicalKeyboardKey.keyW), 'ScoringMode: ShootHubManual', '/Tuning/OperatorDashboard/ScoringMode/ShootHubManual', true);
+    makeNTKeybind(HotKey(LogicalKeyboardKey.keyE), 'ScoringMode: ShootTowerManual', '/Tuning/OperatorDashboard/ScoringMode/ShootTowerManual', true);
+    makeNTKeybind(HotKey(LogicalKeyboardKey.keyR), 'ScoringMode: PassManual', '/Tuning/OperatorDashboard/ScoringMode/PassManual', true);
   }
 
   @override
