@@ -28,6 +28,7 @@ import 'package:elastic_dashboard/services/hotkey_manager.dart';
 import 'package:elastic_dashboard/services/ip_address_util.dart';
 import 'package:elastic_dashboard/services/log.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
+import 'package:elastic_dashboard/services/nt4_client.dart';
 import 'package:elastic_dashboard/services/settings.dart';
 import 'package:elastic_dashboard/services/update_checker.dart';
 import 'package:elastic_dashboard/util/tab_data.dart';
@@ -759,6 +760,43 @@ class _DashboardPageState extends State<DashboardPage>
         }
         widget.model.changeIPAddressMode(IPAddressMode.localhost);
       },
+    );
+
+    void makeNTKeybind(HotKey key, String name, String topic, dynamic data) {
+      NT4Subscription? ntSubscription;
+      NT4Topic? ntTopic;
+      hotKeyManager.register(
+        key,
+        callback: () {
+          ntSubscription ??= model.ntConnection.subscribeWithOptions(
+            topic,
+            NT4SubscriptionOptions(
+              periodicRateSeconds:
+                  model.preferences.getDouble(PrefKeys.defaultPeriod) ??
+                  Defaults.defaultPeriod,
+            ),
+          );
+          ntTopic ??= model.ntConnection.getTopicFromName(topic);
+
+          if (ntSubscription == null || ntTopic == null) {
+            model.showInfoNotification(title: name, message: 'Failure');
+          } else {
+            if (!model.ntConnection.isTopicPublished(ntTopic)) {
+              model.ntConnection.publishTopic(ntTopic!);
+            }
+
+            model.ntConnection.updateDataFromTopic(ntTopic!, true);
+            model.showInfoNotification(title: name, message: 'Success');
+          }
+        },
+      );
+    }
+
+    makeNTKeybind(
+      HotKey(LogicalKeyboardKey.keyA),
+      'Auto Chosen',
+      '/Tuning/OperatorDashboard/AutoChosen',
+      true,
     );
   }
 
