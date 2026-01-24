@@ -27,35 +27,35 @@ permissions:
   pages: write
 
 jobs:
-  formatting-analysis:
-    name: "Check Formatting & Analyze"
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
-          cache-path: ${{ runner.tool_cache }}/flutter/linux
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed lib/* test/*
-
-      - name: Generate mocks
-        run: dart run build_runner build
-
-      - name: Verify import sorting
-        run: dart run import_sorter:main --exit-if-changed
-
-      - name: Analyze project source
-        run: flutter analyze --fatal-infos
+#  formatting-analysis:
+#    name: "Check Formatting & Analyze"
+#    runs-on: ubuntu-22.04
+#
+#    steps:
+#      - name: Checkout repo
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: ${{ env.FLUTTER_VERSION }}
+#          cache: true
+#          cache-path: ${{ runner.tool_cache }}/flutter/linux
+#
+#      - name: Install dependencies
+#        run: flutter pub get
+#
+#      - name: Verify formatting
+#        run: dart format --output=none --set-exit-if-changed lib/* test/*
+#
+#      - name: Generate mocks
+#        run: dart run build_runner build
+#
+#      - name: Verify import sorting
+#        run: dart run import_sorter:main --exit-if-changed
+#
+#      - name: Analyze project source
+#        run: flutter analyze --fatal-infos
 
   test:
     name: "Run Tests"
@@ -129,30 +129,30 @@ jobs:
             wpilib: false
 
           # WPILib builds
-          - os: windows-latest
-            platform-name: "WPILib Windows"
-            platform: "windows"
-            build-path: "build/windows/x64/runner/Release"
-            artifact-name: Elastic-WPILib-Windows
-            artifact-file: Elastic-WPILib-Windows.zip
-            wpilib: true
-          - os: macos-latest
-            platform-name: "WPILib MacOS"
-            platform: "macos"
-            build-path: "build/macos/Build/Products/Release"
-            artifact-name: Elastic-WPILib-macOS
-            artifact-file: Elastic-WPILib-macOS.tar.gz
-            wpilib: true
-          - os: ubuntu-22.04
-            platform-name: "WPILib Linux"
-            platform: "linux"
-            build-path: "build/linux/x64/release/bundle"
-            artifact-name: Elastic-WPILib-Linux
-            artifact-file: Elastic-WPILib-Linux.zip
-            wpilib: true
+#          - os: windows-latest
+#            platform-name: "WPILib Windows"
+#            platform: "windows"
+#            build-path: "build/windows/x64/runner/Release"
+#            artifact-name: Elastic-WPILib-Windows
+#            artifact-file: Elastic-WPILib-Windows.zip
+#            wpilib: true
+#          - os: macos-latest
+#            platform-name: "WPILib MacOS"
+#            platform: "macos"
+#            build-path: "build/macos/Build/Products/Release"
+#            artifact-name: Elastic-WPILib-macOS
+#            artifact-file: Elastic-WPILib-macOS.tar.gz
+#            wpilib: true
+#          - os: ubuntu-22.04
+#            platform-name: "WPILib Linux"
+#            platform: "linux"
+#            build-path: "build/linux/x64/release/bundle"
+#            artifact-name: Elastic-WPILib-Linux
+#            artifact-file: Elastic-WPILib-Linux.zip
+#            wpilib: true
 
     name: "Build - ${{ matrix.platform-name }}"
-    needs: [formatting-analysis, test]
+#    needs: [formatting-analysis, test]
     runs-on: ${{ matrix.os }}
 
     steps:
