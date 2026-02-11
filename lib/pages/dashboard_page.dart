@@ -785,7 +785,7 @@ class _DashboardPageState extends State<DashboardPage>
               model.ntConnection.publishTopic(ntTopic!);
             }
 
-            model.ntConnection.updateDataFromTopic(ntTopic!, true);
+            model.ntConnection.updateDataFromTopic(ntTopic!, data);
             model.showInfoNotification(title: name, message: 'Success');
           }
         },
