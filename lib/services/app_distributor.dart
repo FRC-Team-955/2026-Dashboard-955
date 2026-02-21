@@ -1,4 +1,4 @@
-const bool isWPILib = bool.fromEnvironment('ELASTIC_WPILIB');
+const bool isWPILib = true;
 
 const String logoPath = 'assets/logos/logo.png';
 
