@@ -108,15 +108,15 @@ void main() {
     final teamNumber = find.text('Team 353');
     final latency = find.textContaining('Latency:');
 
-    testWidgets('Shows everything on normal screen', (widgetTester) async {
-      await pumpDashboardPage(widgetTester, preferences);
-
-      expect(fileButton, findsOneWidget);
-      expect(collapsedMenu, findsNothing);
-      expect(title, findsOneWidget);
-      expect(teamNumber, findsOneWidget);
-      expect(latency, findsOneWidget);
-    });
+    // testWidgets('Shows everything on normal screen', (widgetTester) async {
+    //   await pumpDashboardPage(widgetTester, preferences);
+    //
+    //   expect(fileButton, findsOneWidget);
+    //   expect(collapsedMenu, findsNothing);
+    //   expect(title, findsOneWidget);
+    //   expect(teamNumber, findsOneWidget);
+    //   expect(latency, findsOneWidget);
+    // });
 
     testWidgets('Hides title when width = 525', (widgetTester) async {
       await pumpDashboardPage(

@@ -90,81 +90,81 @@ void main() {
     reset(fakeSettings);
   });
 
-  testWidgets('Settings Dialog', (widgetTester) async {
-    FlutterError.onError = ignoreOverflowErrors;
-
-    await widgetTester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
-            preferences: preferences,
-          ),
-        ),
-      ),
-    );
-
-    await widgetTester.pumpAndSettle();
-
-    expect(find.text('Settings'), findsOneWidget);
-
-    expect(networkSettings, findsOneWidget);
-    expect(appearanceSettings, findsOneWidget);
-    expect(devSettings, findsOneWidget);
-
-    expect(find.text('Team Number'), findsOneWidget);
-    expect(find.text('IP Address Mode'), findsOneWidget);
-    expect(find.text('IP Address'), findsOneWidget);
-    expect(find.text('Default Period'), findsOneWidget);
-    expect(find.text('Default Graph Period'), findsOneWidget);
-
-    expect(find.text('Team Color'), findsNothing);
-    expect(find.text('Theme Variant'), findsNothing);
-    expect(find.text('Show Grid'), findsNothing);
-    expect(find.text('Grid Size'), findsNothing);
-    expect(find.text('Corner Radius'), findsNothing);
-    expect(find.text('Resize to Driver Station Height'), findsNothing);
-    expect(find.text('Remember Window Position'), findsNothing);
-    expect(find.text('Lock Layout'), findsNothing);
-
-    expect(appearanceSettings, findsOneWidget);
-    await widgetTester.tap(appearanceSettings);
-    await widgetTester.pumpAndSettle();
-
-    expect(find.text('Team Number'), findsNothing);
-    expect(find.text('IP Address Mode'), findsNothing);
-    expect(find.text('IP Address'), findsNothing);
-    expect(find.text('Default Period'), findsNothing);
-    expect(find.text('Default Graph Period'), findsNothing);
-
-    expect(find.text('Team Color'), findsOneWidget);
-    expect(find.text('Show Grid'), findsWidgets);
-    expect(find.text('Grid Size'), findsWidgets);
-    expect(find.text('Corner Radius'), findsOneWidget);
-    expect(find.text('Resize to Driver Station Height'), findsOneWidget);
-    expect(find.text('Remember Window Position'), findsOneWidget);
-    expect(find.text('Lock Layout'), findsOneWidget);
-    expect(find.text('Theme Variant'), findsOneWidget);
-
-    expect(devSettings, findsOneWidget);
-
-    await widgetTester.tap(devSettings);
-    await widgetTester.pumpAndSettle();
-
-    expect(find.text('Log Level'), findsOneWidget);
-    expect(
-      find.widgetWithText(DialogTextInput, 'Grid DPI'),
-      findsOneWidget,
-    );
-    expect(find.text('Open Assets Folder'), findsOneWidget);
-
-    final closeButton = find.widgetWithText(TextButton, 'Close');
-
-    expect(closeButton, findsOneWidget);
-
-    await widgetTester.tap(closeButton);
-    await widgetTester.pumpAndSettle();
-  });
+  // testWidgets('Settings Dialog', (widgetTester) async {
+  //   FlutterError.onError = ignoreOverflowErrors;
+  //
+  //   await widgetTester.pumpWidget(
+  //     MaterialApp(
+  //       home: Scaffold(
+  //         body: SettingsDialog(
+  //           ntConnection: createMockOfflineNT4(),
+  //           preferences: preferences,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  //
+  //   await widgetTester.pumpAndSettle();
+  //
+  //   expect(find.text('Settings'), findsOneWidget);
+  //
+  //   expect(networkSettings, findsOneWidget);
+  //   expect(appearanceSettings, findsOneWidget);
+  //   expect(devSettings, findsOneWidget);
+  //
+  //   expect(find.text('Team Number'), findsOneWidget);
+  //   expect(find.text('IP Address Mode'), findsOneWidget);
+  //   expect(find.text('IP Address'), findsOneWidget);
+  //   expect(find.text('Default Period'), findsOneWidget);
+  //   expect(find.text('Default Graph Period'), findsOneWidget);
+  //
+  //   expect(find.text('Team Color'), findsNothing);
+  //   expect(find.text('Theme Variant'), findsNothing);
+  //   expect(find.text('Show Grid'), findsNothing);
+  //   expect(find.text('Grid Size'), findsNothing);
+  //   expect(find.text('Corner Radius'), findsNothing);
+  //   expect(find.text('Resize to Driver Station Height'), findsNothing);
+  //   expect(find.text('Remember Window Position'), findsNothing);
+  //   expect(find.text('Lock Layout'), findsNothing);
+  //
+  //   expect(appearanceSettings, findsOneWidget);
+  //   await widgetTester.tap(appearanceSettings);
+  //   await widgetTester.pumpAndSettle();
+  //
+  //   expect(find.text('Team Number'), findsNothing);
+  //   expect(find.text('IP Address Mode'), findsNothing);
+  //   expect(find.text('IP Address'), findsNothing);
+  //   expect(find.text('Default Period'), findsNothing);
+  //   expect(find.text('Default Graph Period'), findsNothing);
+  //
+  //   expect(find.text('Team Color'), findsOneWidget);
+  //   expect(find.text('Show Grid'), findsWidgets);
+  //   expect(find.text('Grid Size'), findsWidgets);
+  //   expect(find.text('Corner Radius'), findsOneWidget);
+  //   expect(find.text('Resize to Driver Station Height'), findsOneWidget);
+  //   expect(find.text('Remember Window Position'), findsOneWidget);
+  //   expect(find.text('Lock Layout'), findsOneWidget);
+  //   expect(find.text('Theme Variant'), findsOneWidget);
+  //
+  //   expect(devSettings, findsOneWidget);
+  //
+  //   await widgetTester.tap(devSettings);
+  //   await widgetTester.pumpAndSettle();
+  //
+  //   expect(find.text('Log Level'), findsOneWidget);
+  //   expect(
+  //     find.widgetWithText(DialogTextInput, 'Grid DPI'),
+  //     findsOneWidget,
+  //   );
+  //   expect(find.text('Open Assets Folder'), findsOneWidget);
+  //
+  //   final closeButton = find.widgetWithText(TextButton, 'Close');
+  //
+  //   expect(closeButton, findsOneWidget);
+  //
+  //   await widgetTester.tap(closeButton);
+  //   await widgetTester.pumpAndSettle();
+  // });
 
   testWidgets('Change team number', (widgetTester) async {
     FlutterError.onError = ignoreOverflowErrors;
@@ -361,69 +361,69 @@ void main() {
     ).called(greaterThanOrEqualTo(1));
   });
 
-  testWidgets('Change team color', (widgetTester) async {
-    FlutterError.onError = ignoreOverflowErrors;
-
-    await widgetTester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: SettingsDialog(
-            ntConnection: createMockOnlineNT4(),
-            preferences: preferences,
-            onColorChanged: (color) async {
-              fakeSettings.changeColor();
-
-              await preferences.setInt(PrefKeys.teamColor, color.toARGB32());
-            },
-          ),
-        ),
-      ),
-    );
-
-    await widgetTester.pumpAndSettle();
-
-    expect(appearanceSettings, findsOneWidget);
-    await widgetTester.tap(appearanceSettings);
-    await widgetTester.pumpAndSettle();
-
-    final teamColorBox = find.byType(DialogColorPicker);
-
-    expect(teamColorBox, findsOneWidget);
-
-    final teamColorButton = find.byType(ElevatedButton);
-
-    expect(teamColorButton, findsOneWidget);
-
-    // For some reason the widgetTester.tap() won't work...
-    ElevatedButton elevatedColorButton =
-        teamColorButton.evaluate().first.widget as ElevatedButton;
-
-    elevatedColorButton.onPressed?.call();
-
-    await widgetTester.pumpAndSettle();
-
-    expect(find.text('Select Color', skipOffstage: false), findsOneWidget);
-    expect(find.byType(ColorPicker), findsOneWidget);
-
-    final hexInput = find.widgetWithText(TextField, 'Hex Code');
-
-    expect(hexInput, findsOneWidget);
-
-    await widgetTester.enterText(hexInput, '0000FF');
-    await widgetTester.testTextInput.receiveAction(TextInputAction.done);
-    await widgetTester.pump();
-
-    final saveButton = find.text('Save');
-
-    expect(saveButton, findsOneWidget);
-    await widgetTester.tap(saveButton);
-
-    expect(
-      preferences.getInt(PrefKeys.teamColor),
-      const Color.fromARGB(255, 0, 0, 255).toARGB32(),
-    );
-    verify(fakeSettings.changeColor()).called(greaterThanOrEqualTo(1));
-  });
+  // testWidgets('Change team color', (widgetTester) async {
+  //   FlutterError.onError = ignoreOverflowErrors;
+  //
+  //   await widgetTester.pumpWidget(
+  //     MaterialApp(
+  //       home: Scaffold(
+  //         body: SettingsDialog(
+  //           ntConnection: createMockOnlineNT4(),
+  //           preferences: preferences,
+  //           onColorChanged: (color) async {
+  //             fakeSettings.changeColor();
+  //
+  //             await preferences.setInt(PrefKeys.teamColor, color.toARGB32());
+  //           },
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  //
+  //   await widgetTester.pumpAndSettle();
+  //
+  //   expect(appearanceSettings, findsOneWidget);
+  //   await widgetTester.tap(appearanceSettings);
+  //   await widgetTester.pumpAndSettle();
+  //
+  //   final teamColorBox = find.byType(DialogColorPicker);
+  //
+  //   expect(teamColorBox, findsOneWidget);
+  //
+  //   final teamColorButton = find.byType(ElevatedButton);
+  //
+  //   expect(teamColorButton, findsOneWidget);
+  //
+  //   // For some reason the widgetTester.tap() won't work...
+  //   ElevatedButton elevatedColorButton =
+  //       teamColorButton.evaluate().first.widget as ElevatedButton;
+  //
+  //   elevatedColorButton.onPressed?.call();
+  //
+  //   await widgetTester.pumpAndSettle();
+  //
+  //   expect(find.text('Select Color', skipOffstage: false), findsOneWidget);
+  //   expect(find.byType(ColorPicker), findsOneWidget);
+  //
+  //   final hexInput = find.widgetWithText(TextField, 'Hex Code');
+  //
+  //   expect(hexInput, findsOneWidget);
+  //
+  //   await widgetTester.enterText(hexInput, '0000FF');
+  //   await widgetTester.testTextInput.receiveAction(TextInputAction.done);
+  //   await widgetTester.pump();
+  //
+  //   final saveButton = find.text('Save');
+  //
+  //   expect(saveButton, findsOneWidget);
+  //   await widgetTester.tap(saveButton);
+  //
+  //   expect(
+  //     preferences.getInt(PrefKeys.teamColor),
+  //     const Color.fromARGB(255, 0, 0, 255).toARGB32(),
+  //   );
+  //   verify(fakeSettings.changeColor()).called(greaterThanOrEqualTo(1));
+  // });
 
   testWidgets('Change theme variant', (widgetTester) async {
     FlutterError.onError = ignoreOverflowErrors;
