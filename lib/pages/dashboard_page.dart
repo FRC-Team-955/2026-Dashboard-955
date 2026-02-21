@@ -762,7 +762,7 @@ class _DashboardPageState extends State<DashboardPage>
       },
     );
 
-    void makeNTKeybind(HotKey key, String name, String topic, dynamic data) {
+    void makeNTKeybind(HotKey key, String name, String topic, dynamic Function() data) {
       NT4Subscription? ntSubscription;
       NT4Topic? ntTopic;
       hotKeyManager.register(
@@ -771,31 +771,69 @@ class _DashboardPageState extends State<DashboardPage>
           ntSubscription ??= model.ntConnection.subscribeWithOptions(
             topic,
             NT4SubscriptionOptions(
-              periodicRateSeconds:
-                  model.preferences.getDouble(PrefKeys.defaultPeriod) ??
+              periodicRateSeconds: model.preferences.getDouble(PrefKeys.defaultPeriod) ??
                   Defaults.defaultPeriod,
             ),
           );
           ntTopic ??= model.ntConnection.getTopicFromName(topic);
 
+          var newValue = data();
           if (ntSubscription == null || ntTopic == null) {
-            model.showErrorNotification(title: name, message: 'Failure');
+            model.showErrorNotification(title: name, message: 'Failure: $newValue');
           } else {
             if (!model.ntConnection.isTopicPublished(ntTopic)) {
               model.ntConnection.publishTopic(ntTopic!);
             }
 
-            model.ntConnection.updateDataFromTopic(ntTopic!, data);
-            model.showInfoNotification(title: name, message: 'Success');
+            model.ntConnection.updateDataFromTopic(ntTopic!, newValue);
+            model.showInfoNotification(title: name, message: 'Success: $newValue');
           }
         },
       );
     }
 
-    makeNTKeybind(HotKey(LogicalKeyboardKey.keyQ), 'ScoringMode: ShootAndPassAutomatic', '/Tuning/OperatorDashboard/ScoringMode/ShootAndPassAutomatic', true);
-    makeNTKeybind(HotKey(LogicalKeyboardKey.keyW), 'ScoringMode: ShootHubManual', '/Tuning/OperatorDashboard/ScoringMode/ShootHubManual', true);
-    makeNTKeybind(HotKey(LogicalKeyboardKey.keyE), 'ScoringMode: ShootTowerManual', '/Tuning/OperatorDashboard/ScoringMode/ShootTowerManual', true);
-    makeNTKeybind(HotKey(LogicalKeyboardKey.keyR), 'ScoringMode: PassManual', '/Tuning/OperatorDashboard/ScoringMode/PassManual', true);
+    makeNTKeybind(
+        HotKey(LogicalKeyboardKey.keyQ), 'ScoringMode: ShootAndPassAutomatic',
+        '/Tuning/OperatorDashboard/ScoringMode/ShootAndPassAutomatic', () => true
+    );
+    makeNTKeybind(
+        HotKey(LogicalKeyboardKey.keyW), 'ScoringMode: ShootHubManual',
+        '/Tuning/OperatorDashboard/ScoringMode/ShootHubManual', () => true
+    );
+    makeNTKeybind(
+        HotKey(LogicalKeyboardKey.keyE), 'ScoringMode: ShootTowerManual',
+        '/Tuning/OperatorDashboard/ScoringMode/ShootTowerManual', () => true
+    );
+    makeNTKeybind(
+        HotKey(LogicalKeyboardKey.keyR), 'ScoringMode: PassManual',
+        '/Tuning/OperatorDashboard/ScoringMode/PassManual', () => true
+    );
+
+    var manualAiming = false;
+    makeNTKeybind(
+        HotKey(LogicalKeyboardKey.keyT), 'ManualAiming',
+        '/Tuning/OperatorDashboard/ManualAiming', () => manualAiming = !manualAiming
+    );
+
+    var flywheelSmudgeRPM = 0;
+    makeNTKeybind(
+        HotKey(LogicalKeyboardKey.keyY), 'FlywheelSmudgeRPM +',
+        '/Tuning/OperatorDashboard/FlywheelSmudgeRPM', () => flywheelSmudgeRPM += 100
+    );
+    makeNTKeybind(
+        HotKey(LogicalKeyboardKey.keyH), 'FlywheelSmudgeRPM -',
+        '/Tuning/OperatorDashboard/FlywheelSmudgeRPM', () => flywheelSmudgeRPM -= 100
+    );
+
+    var hoodSmudgeDegrees = 0;
+    makeNTKeybind(
+        HotKey(LogicalKeyboardKey.keyU), 'HoodSmudgeDegrees +',
+        '/Tuning/OperatorDashboard/HoodSmudgeDegrees', () => hoodSmudgeDegrees += 1
+    );
+    makeNTKeybind(
+        HotKey(LogicalKeyboardKey.keyJ), 'HoodSmudgeDegrees -',
+        '/Tuning/OperatorDashboard/HoodSmudgeDegrees', () => hoodSmudgeDegrees -= 1
+    );
   }
 
   @override
