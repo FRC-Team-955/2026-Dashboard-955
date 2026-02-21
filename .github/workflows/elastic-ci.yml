@@ -165,6 +165,9 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y libglu1-mesa ninja-build libgtk-3-dev liblzma-dev
 
+      - name: Add build metadata
+        run: sed -E -e '/.*buildMetadata.*/s/\'.*\'/\''(git log -1 --format="%as %s")'\'/' -i lib/services/app_distributor.dart
+
       - name: Build for ${{ matrix.platform-name }}
         uses: ./.github/workflows/elastic-build
         with:

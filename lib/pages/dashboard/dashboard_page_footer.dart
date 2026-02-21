@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:elastic_dashboard/pages/dashboard_page.dart';
+import 'package:elastic_dashboard/services/app_distributor.dart';
 import 'package:elastic_dashboard/services/settings.dart';
 
 class DashboardPageFooter extends StatelessWidget {
@@ -34,6 +35,7 @@ class DashboardPageFooter extends StatelessWidget {
 
           String teamNumberText =
               'Team ${preferences.getInt(PrefKeys.teamNumber)?.toString() ?? 'Unknown'}';
+          teamNumberText += '                $buildMetadata';
 
           double connectedWidth = (TextPainter(
             text: TextSpan(text: connectedText, style: footerStyle),
