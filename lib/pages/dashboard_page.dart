@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dot_cast/dot_cast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -762,23 +763,22 @@ class _DashboardPageState extends State<DashboardPage>
       },
     );
 
-    void makeNTKeybind(HotKey key, String name, String topic, dynamic Function() data) {
-      NT4Subscription? ntSubscription;
-      NT4Topic? ntTopic;
+    void makeNTKeybind(HotKey key, String name, String topic, dynamic Function(Object? prevValue) data) {
+      NT4Subscription ntSubscription = model.ntConnection.subscribeWithOptions(
+        topic,
+        NT4SubscriptionOptions(
+          periodicRateSeconds: model.preferences.getDouble(PrefKeys.defaultPeriod) ??
+              Defaults.defaultPeriod,
+        ),
+      );
+      NT4Topic? ntTopic = model.ntConnection.getTopicFromName(topic);
       hotKeyManager.register(
         key,
         callback: () {
-          ntSubscription ??= model.ntConnection.subscribeWithOptions(
-            topic,
-            NT4SubscriptionOptions(
-              periodicRateSeconds: model.preferences.getDouble(PrefKeys.defaultPeriod) ??
-                  Defaults.defaultPeriod,
-            ),
-          );
           ntTopic ??= model.ntConnection.getTopicFromName(topic);
 
-          var newValue = data();
-          if (ntSubscription == null || ntTopic == null) {
+          var newValue = data(ntSubscription.currentValue);
+          if (ntTopic == null) {
             model.showErrorNotification(title: name, message: 'Failure: $newValue');
           } else {
             if (!model.ntConnection.isTopicPublished(ntTopic)) {
@@ -794,45 +794,42 @@ class _DashboardPageState extends State<DashboardPage>
 
     makeNTKeybind(
         HotKey(LogicalKeyboardKey.keyQ), 'ScoringMode: ShootAndPassAutomatic',
-        '/Tuning/OperatorDashboard/ScoringMode/ShootAndPassAutomatic', () => true
+        '/Tuning/OperatorDashboard/ScoringMode/ShootAndPassAutomatic', (_) => true
     );
     makeNTKeybind(
         HotKey(LogicalKeyboardKey.keyW), 'ScoringMode: ShootHubManual',
-        '/Tuning/OperatorDashboard/ScoringMode/ShootHubManual', () => true
+        '/Tuning/OperatorDashboard/ScoringMode/ShootHubManual', (_) => true
     );
     makeNTKeybind(
         HotKey(LogicalKeyboardKey.keyE), 'ScoringMode: ShootTowerManual',
-        '/Tuning/OperatorDashboard/ScoringMode/ShootTowerManual', () => true
+        '/Tuning/OperatorDashboard/ScoringMode/ShootTowerManual', (_) => true
     );
     makeNTKeybind(
         HotKey(LogicalKeyboardKey.keyR), 'ScoringMode: PassManual',
-        '/Tuning/OperatorDashboard/ScoringMode/PassManual', () => true
+        '/Tuning/OperatorDashboard/ScoringMode/PassManual', (_) => true
     );
 
-    var manualAiming = false;
     makeNTKeybind(
         HotKey(LogicalKeyboardKey.keyT), 'ManualAiming',
-        '/Tuning/OperatorDashboard/ManualAiming', () => manualAiming = !manualAiming
+        '/Tuning/OperatorDashboard/ManualAiming', (prevValue) => !(tryCast<bool>(prevValue) ?? false)
     );
 
-    var flywheelSmudgeRPM = 0;
     makeNTKeybind(
         HotKey(LogicalKeyboardKey.keyY), 'FlywheelSmudgeRPM +',
-        '/Tuning/OperatorDashboard/FlywheelSmudgeRPM', () => flywheelSmudgeRPM += 100
+        '/Tuning/OperatorDashboard/FlywheelSmudgeRPM', (prevValue) => (tryCast<double>(prevValue) ?? 0) + 100
     );
     makeNTKeybind(
         HotKey(LogicalKeyboardKey.keyH), 'FlywheelSmudgeRPM -',
-        '/Tuning/OperatorDashboard/FlywheelSmudgeRPM', () => flywheelSmudgeRPM -= 100
+        '/Tuning/OperatorDashboard/FlywheelSmudgeRPM', (prevValue) => (tryCast<double>(prevValue) ?? 0) - 100
     );
 
-    var hoodSmudgeDegrees = 0;
     makeNTKeybind(
         HotKey(LogicalKeyboardKey.keyU), 'HoodSmudgeDegrees +',
-        '/Tuning/OperatorDashboard/HoodSmudgeDegrees', () => hoodSmudgeDegrees += 1
+        '/Tuning/OperatorDashboard/HoodSmudgeDegrees', (prevValue) => (tryCast<double>(prevValue) ?? 0) + 1
     );
     makeNTKeybind(
         HotKey(LogicalKeyboardKey.keyJ), 'HoodSmudgeDegrees -',
-        '/Tuning/OperatorDashboard/HoodSmudgeDegrees', () => hoodSmudgeDegrees -= 1
+        '/Tuning/OperatorDashboard/HoodSmudgeDegrees', (prevValue) => (tryCast<double>(prevValue) ?? 0) - 1
     );
   }
 
