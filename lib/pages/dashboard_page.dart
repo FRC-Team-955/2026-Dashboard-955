@@ -793,43 +793,61 @@ class _DashboardPageState extends State<DashboardPage>
     }
 
     makeNTKeybind(
-        HotKey(LogicalKeyboardKey.keyQ), 'ScoringMode: ShootAndPassAutomatic',
-        '/Tuning/OperatorDashboard/ScoringMode/ShootAndPassAutomatic', (_) => true
+      HotKey(LogicalKeyboardKey.keyQ, modifiers: [KeyModifier.alt]),
+      'ScoringMode: ShootAndPassAutomatic',
+      '/Tuning/OperatorDashboard/ScoringMode/ShootAndPassAutomatic',
+      (_) => true
     );
     makeNTKeybind(
-        HotKey(LogicalKeyboardKey.keyW), 'ScoringMode: ShootHubManual',
-        '/Tuning/OperatorDashboard/ScoringMode/ShootHubManual', (_) => true
+      HotKey(LogicalKeyboardKey.keyW, modifiers: [KeyModifier.alt]),
+      'ScoringMode: ShootHubManual',
+      '/Tuning/OperatorDashboard/ScoringMode/ShootHubManual',
+      (_) => true
+  );
+    makeNTKeybind(
+      HotKey(LogicalKeyboardKey.keyE, modifiers: [KeyModifier.alt]),
+      'ScoringMode: ShootTowerManual',
+      '/Tuning/OperatorDashboard/ScoringMode/ShootTowerManual',
+      (_) => true
     );
     makeNTKeybind(
-        HotKey(LogicalKeyboardKey.keyE), 'ScoringMode: ShootTowerManual',
-        '/Tuning/OperatorDashboard/ScoringMode/ShootTowerManual', (_) => true
-    );
-    makeNTKeybind(
-        HotKey(LogicalKeyboardKey.keyR), 'ScoringMode: PassManual',
-        '/Tuning/OperatorDashboard/ScoringMode/PassManual', (_) => true
-    );
-
-    makeNTKeybind(
-        HotKey(LogicalKeyboardKey.keyT), 'ManualAiming',
-        '/Tuning/OperatorDashboard/ManualAiming', (prevValue) => !(tryCast<bool>(prevValue) ?? false)
-    );
-
-    makeNTKeybind(
-        HotKey(LogicalKeyboardKey.keyY), 'FlywheelSmudgeRPM +',
-        '/Tuning/OperatorDashboard/FlywheelSmudgeRPM', (prevValue) => (tryCast<double>(prevValue) ?? 0) + 100
-    );
-    makeNTKeybind(
-        HotKey(LogicalKeyboardKey.keyH), 'FlywheelSmudgeRPM -',
-        '/Tuning/OperatorDashboard/FlywheelSmudgeRPM', (prevValue) => (tryCast<double>(prevValue) ?? 0) - 100
+      HotKey(LogicalKeyboardKey.keyR, modifiers: [KeyModifier.alt]),
+      'ScoringMode: PassManual',
+      '/Tuning/OperatorDashboard/ScoringMode/PassManual',
+      (_) => true
     );
 
     makeNTKeybind(
-        HotKey(LogicalKeyboardKey.keyU), 'HoodSmudgeDegrees +',
-        '/Tuning/OperatorDashboard/HoodSmudgeDegrees', (prevValue) => (tryCast<double>(prevValue) ?? 0) + 1
+      HotKey(LogicalKeyboardKey.keyT, modifiers: [KeyModifier.alt]),
+      'ManualAiming',
+      '/Tuning/OperatorDashboard/ManualAiming',
+      (prevValue) => !(tryCast<bool>(prevValue) ?? false)
+    );
+
+    makeNTKeybind(
+      HotKey(LogicalKeyboardKey.keyY, modifiers: [KeyModifier.alt]),
+      'FlywheelSmudgeRPM +',
+      '/Tuning/OperatorDashboard/FlywheelSmudgeRPM',
+      (prevValue) => (tryCast<double>(prevValue) ?? 0) + 100
     );
     makeNTKeybind(
-        HotKey(LogicalKeyboardKey.keyJ), 'HoodSmudgeDegrees -',
-        '/Tuning/OperatorDashboard/HoodSmudgeDegrees', (prevValue) => (tryCast<double>(prevValue) ?? 0) - 1
+      HotKey(LogicalKeyboardKey.keyH, modifiers: [KeyModifier.alt]),
+      'FlywheelSmudgeRPM -',
+      '/Tuning/OperatorDashboard/FlywheelSmudgeRPM',
+      (prevValue) => (tryCast<double>(prevValue) ?? 0) - 100
+    );
+
+    makeNTKeybind(
+      HotKey(LogicalKeyboardKey.keyU, modifiers: [KeyModifier.alt]),
+      'HoodSmudgeDegrees +',
+      '/Tuning/OperatorDashboard/HoodSmudgeDegrees',
+      (prevValue) => (tryCast<double>(prevValue) ?? 0) + 1
+    );
+    makeNTKeybind(
+      HotKey(LogicalKeyboardKey.keyJ, modifiers: [KeyModifier.alt]),
+      'HoodSmudgeDegrees -',
+      '/Tuning/OperatorDashboard/HoodSmudgeDegrees',
+      (prevValue) => (tryCast<double>(prevValue) ?? 0) - 1
     );
   }
 
