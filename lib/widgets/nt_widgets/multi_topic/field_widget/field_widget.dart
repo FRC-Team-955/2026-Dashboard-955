@@ -47,17 +47,31 @@ class FieldWidget extends NTWidget {
         scaleReduction;
 
     double width =
-        (objectSize?.width ?? model.otherObjectSize) *
+        (objectSize?.width ?? model.robotWidthMeters) * //model.otherObjectSize) *
         model.field.pixelsPerMeterHorizontal *
         scaleReduction;
 
     double length =
-        (objectSize?.height ?? model.otherObjectSize) *
+        (objectSize?.height ?? model.robotLengthMeters) * //model.otherObjectSize) *
         model.field.pixelsPerMeterVertical *
         scaleReduction;
 
     Matrix4 transform = Matrix4.translationValues(xFromCenter, yFromCenter, 0.0)
       ..rotateZ(-angleRadians);
+
+    Color color = Colors.grey;
+    String name = object.name.split('/').last;
+    if (name == 'AutoStart') {
+      color = Colors.yellow;
+    } else if (name == 'MoveTo') {
+      color = Colors.blue;
+    } else if (name == 'TrajectorySample') {
+      color = Colors.orange;
+    } else if (name.startsWith('AcceptedPose')) {
+      color = Colors.green;
+    } else if (name.startsWith('RejectedPose')) {
+      color = Colors.red;
+    }
 
     Widget otherObject = Container(
       alignment: Alignment.center,
@@ -65,7 +79,7 @@ class FieldWidget extends NTWidget {
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.35),
         border: Border.all(
-          color: model.robotColor,
+          color: color,
           width: 0.125 * min(width, length),
         ),
       ),

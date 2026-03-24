@@ -23,12 +23,13 @@ class FieldObject {
   FieldObjectType type;
   Pose2dStruct? pose;
   List<Pose2dStruct>? poses;
+  String name;
 
   double get x => pose!.x;
   double get y => pose!.y;
   double get angle => pose!.angle;
 
-  FieldObject({required this.type, this.pose, this.poses})
+  FieldObject({required this.type, this.pose, this.poses, required this.name})
     : assert(pose != null || poses != null);
 }
 
@@ -152,7 +153,7 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
         Uint8List.fromList(poseBytes),
       );
 
-      return FieldObject(type: FieldObjectType.robot, pose: poseStruct);
+      return FieldObject(type: FieldObjectType.robot, pose: poseStruct, name: robotTopicName);
     } else {
       List<double> robotPosition = robotPositionRaw
           .whereType<double>()
@@ -170,6 +171,7 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
       return FieldObject(
         type: FieldObjectType.robot,
         pose: Pose2dStruct(x: robotX, y: robotY, angle: robotTheta),
+        name: robotTopicName
       );
     }
   }
@@ -239,6 +241,7 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
             FieldObject(
               type: FieldObjectType.trajectory,
               poses: objectTrajectory,
+              name: objectSubscription.topic,
             ),
           );
         }
@@ -252,7 +255,11 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
 
             for (Pose2dStruct pose in poses) {
               objects.add(
-                FieldObject(type: FieldObjectType.otherObject, pose: pose),
+                FieldObject(
+                  type: FieldObjectType.otherObject,
+                  pose: pose,
+                  name: objectSubscription.topic
+                ),
               );
             }
           } else {
@@ -264,6 +271,7 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
               FieldObject(
                 type: FieldObjectType.otherObject,
                 pose: pose,
+                name: objectSubscription.topic
               ),
             );
           }
@@ -283,8 +291,9 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
                 pose: Pose2dStruct(
                   x: positionArray[0],
                   y: positionArray[1],
-                  angle: radians(positionArray[2]),
+                  angle: radians(positionArray[2])
                 ),
+                name: objectSubscription.topic
               ),
             );
           }
