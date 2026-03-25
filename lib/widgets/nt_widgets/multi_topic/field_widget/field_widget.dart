@@ -71,6 +71,8 @@ class FieldWidget extends NTWidget {
       color = Colors.green;
     } else if (name.startsWith('RejectedPose')) {
       color = Colors.red;
+    } else if (name.startsWith('UncertaintyRange')) {
+      color = Colors.purple;
     }
 
     Widget otherObject = Container(
