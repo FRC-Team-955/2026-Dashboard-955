@@ -106,9 +106,7 @@ class FieldWidget extends NTWidget {
     }
 
     return Transform(
-      origin: name.startsWith('BestCluster')
-          ? Offset(min(width, length) / 2, min(width, length) / 2)
-          : Offset(length, width) / 2,
+      origin: Offset(length, width) / 2,
       transform: transform,
       child: otherObject,
     );
