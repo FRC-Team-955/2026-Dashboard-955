@@ -73,28 +73,44 @@ class FieldWidget extends NTWidget {
       color = Colors.red;
     } else if (name.startsWith('UncertaintyRange')) {
       color = Colors.purple;
+    } else if (name.startsWith('BestCluster')) {
+      color = Colors.yellow;
     }
 
-    Widget otherObject = Container(
-      alignment: Alignment.center,
-      constraints: const BoxConstraints(minWidth: 4.0, minHeight: 4.0),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.35),
-        border: Border.all(
-          color: color,
-          width: 0.125 * min(width, length),
+    Widget otherObject;
+    if (name.startsWith('BestCluster')) {
+      otherObject = Container(
+        width: 0.5 * min(width, length),
+        height: 0.5 * min(width, length),
+        decoration: BoxDecoration(
+          color: Colors.yellow,
+          shape: BoxShape.circle,
         ),
-      ),
-      width: length,
-      height: width,
-      child: CustomPaint(
-        size: Size(length * 0.275, width * 0.275),
-        painter: TrianglePainter(strokeWidth: 0.08 * min(width, length)),
-      ),
-    );
+      );
+    } else {
+      otherObject = Container(
+        alignment: Alignment.center,
+        constraints: const BoxConstraints(minWidth: 4.0, minHeight: 4.0),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.35),
+          border: Border.all(
+            color: color,
+            width: 0.125 * min(width, length),
+          ),
+        ),
+        width: length,
+        height: width,
+        child: CustomPaint(
+          size: Size(length * 0.275, width * 0.275),
+          painter: TrianglePainter(strokeWidth: 0.08 * min(width, length)),
+        ),
+      );
+    }
 
     return Transform(
-      origin: Offset(length, width) / 2,
+      origin: name.startsWith('BestCluster')
+          ? Offset(min(width, length) / 2, min(width, length) / 2)
+          : Offset(length, width) / 2,
       transform: transform,
       child: otherObject,
     );
