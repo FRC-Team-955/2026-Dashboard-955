@@ -77,13 +77,9 @@ class FieldWidget extends NTWidget {
 
     Widget otherObject;
     if (name.startsWith('Fuel')) {
-      otherObject = Container(
-        width: 0.375 * min(width, length),
-        height: 0.375 * min(width, length),
-        decoration: BoxDecoration(
-          color: Colors.yellow,
-          shape: BoxShape.circle,
-        ),
+      otherObject = CustomPaint(
+        size: Size(length * 0.375, width * 0.375),
+        painter: CirclePainter(strokeWidth: 0.08 * min(width, length)),
       );
     } else {
       otherObject = Container(
@@ -537,4 +533,35 @@ class TrajectoryPainter extends CustomPainter {
       oldDelegate.points != points ||
       oldDelegate.strokeWidth != strokeWidth ||
       oldDelegate.color != color;
+}
+
+class CirclePainter extends CustomPainter {
+  final Color strokeColor;
+  final PaintingStyle paintingStyle;
+  final double strokeWidth;
+
+  CirclePainter({
+    this.strokeColor = Colors.yellow,
+    this.strokeWidth = 3,
+    this.paintingStyle = PaintingStyle.fill,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = strokeColor
+      ..strokeWidth = strokeWidth
+      ..style = paintingStyle;
+
+    Offset center = Offset(size.width / 2, size.height / 2);
+    double radius = size.width / 2;
+
+    canvas.drawCircle(center, radius, paint);
+  }
+
+  @override
+  bool shouldRepaint(CirclePainter oldDelegate) =>
+      oldDelegate.strokeColor != strokeColor ||
+          oldDelegate.paintingStyle != paintingStyle ||
+          oldDelegate.strokeWidth != strokeWidth;
 }
