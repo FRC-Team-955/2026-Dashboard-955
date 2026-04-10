@@ -73,15 +73,13 @@ class FieldWidget extends NTWidget {
       color = Colors.red;
     } else if (name.startsWith('UncertaintyRange')) {
       color = Colors.purple;
-    } else if (name.startsWith('BestCluster')) {
-      color = Colors.yellow;
     }
 
     Widget otherObject;
-    if (name.startsWith('BestCluster')) {
+    if (name.startsWith('Fuel')) {
       otherObject = Container(
-        width: 0.5 * min(width, length),
-        height: 0.5 * min(width, length),
+        width: 0.375 * min(width, length),
+        height: 0.375 * min(width, length),
         decoration: BoxDecoration(
           color: Colors.yellow,
           shape: BoxShape.circle,
