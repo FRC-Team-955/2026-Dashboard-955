@@ -73,12 +73,12 @@ class FieldWidget extends NTWidget {
       color = Colors.red;
     } else if (name.startsWith('UncertaintyRange')) {
       color = Colors.purple;
-    } else if (name.startsWith('BestCluster')) {
+    } else if (name.startsWith('Fuel')) {
       color = Colors.yellow;
     }
 
     Widget otherObject;
-    if (name.startsWith('BestCluster')) {
+    if (name.startsWith('Fuel')) {
       otherObject = Container(
         width: 0.5 * min(width, length),
         height: 0.5 * min(width, length),
@@ -108,7 +108,7 @@ class FieldWidget extends NTWidget {
     }
 
     return Transform(
-      origin: name.startsWith('BestCluster')
+      origin: name.startsWith('Fuel')
           ? Offset(min(width, length) / 2, min(width, length) / 2)
           : Offset(length, width) / 2,
       transform: transform,
