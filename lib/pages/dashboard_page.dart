@@ -796,13 +796,13 @@ class _DashboardPageState extends State<DashboardPage>
       HotKey(LogicalKeyboardKey.f2),
       'FlywheelSmudgeRPM +',
       '/Tuning/OperatorDashboard/FlywheelSmudgeRPM',
-      (prevValue) => (tryCast<double>(prevValue) ?? 0) + 50
+      (prevValue) => (tryCast<double>(prevValue) ?? 0) + 25
     );
     makeNTKeybind(
       HotKey(LogicalKeyboardKey.f1),
       'FlywheelSmudgeRPM -',
       '/Tuning/OperatorDashboard/FlywheelSmudgeRPM',
-      (prevValue) => (tryCast<double>(prevValue) ?? 0) - 50
+      (prevValue) => (tryCast<double>(prevValue) ?? 0) - 25
     );
 
     makeNTKeybind(
