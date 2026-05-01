@@ -795,27 +795,27 @@ class _DashboardPageState extends State<DashboardPage>
     makeNTKeybind(
       HotKey(LogicalKeyboardKey.f2),
       'FlywheelSmudgeRPM +',
-      '/Tuning/OperatorDashboard/FlywheelSmudgeRPM',
+      '/Tuning/OperatorDashboard/ManualFlywheelRPMSmudge',
       (prevValue) => (tryCast<double>(prevValue) ?? 0) + 25
     );
     makeNTKeybind(
       HotKey(LogicalKeyboardKey.f1),
       'FlywheelSmudgeRPM -',
-      '/Tuning/OperatorDashboard/FlywheelSmudgeRPM',
+      '/Tuning/OperatorDashboard/ManualFlywheelRPMSmudge',
       (prevValue) => (tryCast<double>(prevValue) ?? 0) - 25
     );
 
     makeNTKeybind(
       HotKey(LogicalKeyboardKey.f4),
-      'HoodSmudgeDegrees +',
-      '/Tuning/OperatorDashboard/HoodSmudgeDegrees',
-      (prevValue) => (tryCast<double>(prevValue) ?? 0) + 1
+      'SlipConstantSmudge +',
+      '/Tuning/OperatorDashboard/SlipConstantSmudge',
+      (prevValue) => (tryCast<double>(prevValue) ?? 0) + 0.2
     );
     makeNTKeybind(
       HotKey(LogicalKeyboardKey.f3),
-      'HoodSmudgeDegrees -',
-      '/Tuning/OperatorDashboard/HoodSmudgeDegrees',
-      (prevValue) => (tryCast<double>(prevValue) ?? 0) - 1
+      'SlipConstantSmudge -',
+      '/Tuning/OperatorDashboard/SlipConstantSmudge',
+      (prevValue) => (tryCast<double>(prevValue) ?? 0) - 0.2
     );
   }
 
