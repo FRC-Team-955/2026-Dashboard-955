@@ -809,13 +809,13 @@ class _DashboardPageState extends State<DashboardPage>
       HotKey(LogicalKeyboardKey.f4),
       'SlipConstantSmudge +',
       '/Tuning/OperatorDashboard/SlipConstantSmudge',
-      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) + 0.1
+      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) + 0.01
     );
     makeNTKeybind(
       HotKey(LogicalKeyboardKey.f3),
       'SlipConstantSmudge -',
       '/Tuning/OperatorDashboard/SlipConstantSmudge',
-      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) - 0.1
+      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) - 0.01
     );
   }
 
