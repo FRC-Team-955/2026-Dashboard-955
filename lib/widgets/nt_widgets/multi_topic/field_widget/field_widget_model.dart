@@ -167,7 +167,11 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
         Uint8List.fromList(poseBytes),
       );
 
-      return FieldObject(type: FieldObjectType.robot, pose: poseStruct, name: robotTopicName);
+      return FieldObject(
+        type: FieldObjectType.robot,
+        pose: poseStruct,
+        name: robotTopicName,
+      );
     } else {
       List<double> robotPosition = robotPositionRaw
           .whereType<double>()
@@ -185,7 +189,7 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
       return FieldObject(
         type: FieldObjectType.robot,
         pose: Pose2dStruct(x: robotX, y: robotY, angle: robotTheta),
-        name: robotTopicName
+        name: robotTopicName,
       );
     }
   }
@@ -272,7 +276,7 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
                 FieldObject(
                   type: FieldObjectType.otherObject,
                   pose: pose,
-                  name: objectSubscription.topic
+                  name: objectSubscription.topic,
                 ),
               );
             }
@@ -285,7 +289,7 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
               FieldObject(
                 type: FieldObjectType.otherObject,
                 pose: pose,
-                name: objectSubscription.topic
+                name: objectSubscription.topic,
               ),
             );
           }
@@ -305,9 +309,9 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
                 pose: Pose2dStruct(
                   x: positionArray[0],
                   y: positionArray[1],
-                  angle: radians(positionArray[2])
+                  angle: radians(positionArray[2]),
                 ),
-                name: objectSubscription.topic
+                name: objectSubscription.topic,
               ),
             );
           }

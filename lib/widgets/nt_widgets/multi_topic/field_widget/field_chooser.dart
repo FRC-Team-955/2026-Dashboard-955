@@ -1,3 +1,4 @@
+// ignore: deprecated_member_use, dropdown_button2 still uses Flutter's Material types
 import 'package:flutter/material.dart';
 
 import 'package:dropdown_button2/dropdown_button2.dart';

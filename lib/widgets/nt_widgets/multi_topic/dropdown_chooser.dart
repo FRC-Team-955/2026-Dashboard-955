@@ -1,5 +1,6 @@
 import 'dart:math';
 
+// ignore: deprecated_member_use, dropdown_button2 still uses Flutter's Material types
 import 'package:flutter/material.dart';
 
 import 'package:dot_cast/dot_cast.dart';

@@ -58,12 +58,14 @@ class FieldWidget extends NTWidget {
     );
 
     double width =
-        (objectSize?.width ?? model.robotWidthMeters) * //model.otherObjectSize) *
+        (objectSize?.width ??
+            model.robotWidthMeters) * //model.otherObjectSize) *
         model.field.pixelsPerMeterHorizontal *
         scaleReduction;
 
     double length =
-        (objectSize?.height ?? model.robotLengthMeters) * //model.otherObjectSize) *
+        (objectSize?.height ??
+            model.robotLengthMeters) * //model.otherObjectSize) *
         model.field.pixelsPerMeterVertical *
         scaleReduction;
 

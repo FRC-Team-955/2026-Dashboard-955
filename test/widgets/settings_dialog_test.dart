@@ -1,5 +1,6 @@
+import 'dart:io';
+
 import 'package:flex_seed_scheme/flex_seed_scheme.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logger/logger.dart';
 import 'package:mockito/mockito.dart';
@@ -10,7 +11,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:elastic_dashboard/services/ip_address_util.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/settings.dart';
-import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_color_picker.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_dropdown_chooser.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_text_input.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_toggle_switch.dart';
@@ -143,7 +143,8 @@ void main() {
     expect(find.text('Default Period'), findsNothing);
     expect(find.text('Default Graph Period'), findsNothing);
 
-    expect(find.text('Team Color'), findsOneWidget);
+    // Team color is hard-coded in this fork, so the picker is not shown
+    expect(find.text('Team Color'), findsNothing);
     expect(find.text('Show Grid'), findsWidgets);
     expect(find.text('Grid Size'), findsWidgets);
     expect(find.text('Corner Radius'), findsOneWidget);
@@ -162,7 +163,11 @@ void main() {
       find.widgetWithText(DialogTextInput, 'Grid DPI'),
       findsOneWidget,
     );
-    expect(find.text('Open Assets Folder'), findsOneWidget);
+    // The assets folder button is hidden on macOS (see settings_dialog.dart)
+    expect(
+      find.text('Open Assets Folder'),
+      Platform.isMacOS ? findsNothing : findsOneWidget,
+    );
 
     final closeButton = find.widgetWithText(TextButton, 'Close');
 
@@ -1048,5 +1053,5 @@ void main() {
     await widgetTester.tap(openAssetsButton);
 
     verify(fakeSettings.openAssetsFolder()).called(1);
-  });
+  }, skip: Platform.isMacOS); // The button is hidden on macOS
 }

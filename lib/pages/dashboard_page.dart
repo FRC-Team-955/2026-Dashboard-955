@@ -773,11 +773,17 @@ class _DashboardPageState extends State<DashboardPage>
       },
     );
 
-    void makeNTKeybind(HotKey key, String name, String topic, dynamic Function(Object? prevValue) data) {
+    void makeNTKeybind(
+      HotKey key,
+      String name,
+      String topic,
+      dynamic Function(Object? prevValue) data,
+    ) {
       NT4Subscription ntSubscription = model.ntConnection.subscribeWithOptions(
         topic,
         NT4SubscriptionOptions(
-          periodicRateSeconds: model.preferences.getDouble(PrefKeys.defaultPeriod) ??
+          periodicRateSeconds:
+              model.preferences.getDouble(PrefKeys.defaultPeriod) ??
               Defaults.defaultPeriod,
         ),
       );
@@ -789,14 +795,20 @@ class _DashboardPageState extends State<DashboardPage>
 
           var newValue = data(ntSubscription.currentValue);
           if (ntTopic == null) {
-            model.showErrorNotification(title: name, message: 'Failure: $newValue');
+            model.showErrorNotification(
+              title: name,
+              message: 'Failure: $newValue',
+            );
           } else {
             if (!model.ntConnection.isTopicPublished(ntTopic)) {
               model.ntConnection.publishTopic(ntTopic!);
             }
 
             model.ntConnection.updateDataFromTopic(ntTopic!, newValue);
-            model.showInfoNotification(title: name, message: 'Success: $newValue');
+            model.showInfoNotification(
+              title: name,
+              message: 'Success: $newValue',
+            );
           }
         },
       );
@@ -806,26 +818,26 @@ class _DashboardPageState extends State<DashboardPage>
       HotKey(LogicalKeyboardKey.f2),
       'ManualFlywheelRPMSmudge +',
       '/Tuning/OperatorDashboard/ManualFlywheelRPMSmudge',
-      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) + 25.0
+      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) + 25.0,
     );
     makeNTKeybind(
       HotKey(LogicalKeyboardKey.f1),
       'ManualFlywheelRPMSmudge -',
       '/Tuning/OperatorDashboard/ManualFlywheelRPMSmudge',
-      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) - 25.0
+      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) - 25.0,
     );
 
     makeNTKeybind(
       HotKey(LogicalKeyboardKey.f4),
       'SlipConstantSmudge +',
       '/Tuning/OperatorDashboard/SlipConstantSmudge',
-      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) + 0.01
+      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) + 0.01,
     );
     makeNTKeybind(
       HotKey(LogicalKeyboardKey.f3),
       'SlipConstantSmudge -',
       '/Tuning/OperatorDashboard/SlipConstantSmudge',
-      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) - 0.01
+      (prevValue) => (tryCast<double>(prevValue) ?? 0.0) - 0.01,
     );
   }
 

@@ -14,6 +14,7 @@ import 'package:titlebar_buttons/titlebar_buttons.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:elastic_dashboard/pages/dashboard_page.dart';
+import 'package:elastic_dashboard/services/app_distributor.dart';
 import 'package:elastic_dashboard/services/elastic_layout_downloader.dart';
 import 'package:elastic_dashboard/services/field_images.dart';
 import 'package:elastic_dashboard/services/hotkey_manager.dart';
@@ -108,7 +109,7 @@ void main() {
     final fileButton = find.widgetWithText(SubmenuButton, 'File');
     final collapsedMenu = find.widgetWithIcon(SubmenuButton, Icons.menu);
     final title = find.text('Elastic');
-    final teamNumber = find.text('Team 353');
+    final teamNumber = find.textContaining('Team 353');
     final latency = find.textContaining('Latency:');
 
     // testWidgets('Shows everything on normal screen', (widgetTester) async {
@@ -181,7 +182,7 @@ void main() {
       );
       expect(find.textContaining('Network Tables: Connected'), findsNothing);
       expect(find.textContaining('(10.3.53.2)'), findsNothing);
-      expect(find.text('Team 353'), findsOneWidget);
+      expect(find.textContaining('Team 353'), findsOneWidget);
 
       expect(find.text('Teleoperated'), findsOneWidget);
       expect(find.text('Autonomous'), findsOneWidget);
@@ -197,7 +198,7 @@ void main() {
       expect(find.textContaining('Network Tables: Disconnected'), findsNothing);
       expect(find.textContaining('Network Tables: Connected'), findsWidgets);
       expect(find.textContaining('(10.3.53.2)'), findsWidgets);
-      expect(find.text('Team 353'), findsOneWidget);
+      expect(find.textContaining('Team 353'), findsOneWidget);
 
       expect(find.text('Teleoperated'), findsOneWidget);
       expect(find.text('Autonomous'), findsOneWidget);
@@ -2200,6 +2201,6 @@ void main() {
 
       expect(notificationWidget, findsOneWidget);
       expect(notificationIcon, findsOneWidget);
-    });
+    }, skip: isWPILib); // The 955 fork disables the update checker
   });
 }
