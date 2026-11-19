@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-
 import 'package:dot_cast/dot_cast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:material_ui/material_ui.dart';
 
 import 'package:elastic_dashboard/services/nt4_client.dart';
 import 'package:elastic_dashboard/services/nt4_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/settings.dart';
-import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/combo_box_chooser.dart';
+import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/dropdown_chooser.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/split_button_chooser.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/boolean_box.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/graph.dart';
@@ -46,9 +46,9 @@ sealed class NTWidgetModel extends ChangeNotifier {
   NTWidgetModel({
     required this.ntConnection,
     required this.preferences,
-    required String topic,
+    required this._topic,
     double? period,
-  }) : _topic = topic {
+  }) {
     this.period =
         period ??
         preferences.getDouble(PrefKeys.defaultPeriod) ??
@@ -353,9 +353,9 @@ class MultiTopicNTWidgetModel extends NTWidgetModel {
 
   @override
   List<String> getAvailableDisplayTypes() {
-    if (type == ComboBoxChooser.widgetType ||
+    if (type == DropdownChooser.widgetType ||
         type == SplitButtonChooser.widgetType) {
-      return [ComboBoxChooser.widgetType, SplitButtonChooser.widgetType];
+      return [DropdownChooser.widgetType, SplitButtonChooser.widgetType];
     }
 
     return [type];

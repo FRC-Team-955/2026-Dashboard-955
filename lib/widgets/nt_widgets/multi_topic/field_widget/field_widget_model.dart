@@ -1,11 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 
 import 'package:dot_cast/dot_cast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vector_math/vector_math_64.dart' show radians;
+
+import 'package:material_ui/material_ui.dart';
 
 import 'package:elastic_dashboard/services/field_images.dart';
 import 'package:elastic_dashboard/services/nt4_client.dart';
@@ -15,6 +16,7 @@ import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_color_picker.dar
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_dropdown_chooser.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_text_input.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_toggle_switch.dart';
+import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/field_widget.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 enum FieldObjectType { robot, trajectory, otherObject }
@@ -58,6 +60,8 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
   String _fieldGame = _defaultGame;
   late Field _field;
 
+  CoordinateSystem? _selectedCoordinateSystem;
+
   double _robotWidthMeters = 0.85;
   double _robotLengthMeters = 0.85;
 
@@ -75,6 +79,13 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
   final double _trajectoryPointSize = 0.08;
 
   double get robotWidthMeters => _robotWidthMeters;
+
+  set selectedCoordinateSystem(CoordinateSystem? value) {
+    _selectedCoordinateSystem = value;
+    refresh();
+  }
+
+  CoordinateSystem? get selectedCoordinateSystem => _selectedCoordinateSystem;
 
   set robotWidthMeters(double value) {
     _robotWidthMeters = value;
@@ -135,6 +146,9 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
   double get trajectoryPointSize => _trajectoryPointSize;
 
   Field get field => _field;
+
+  CoordinateSystem get coordinateSystem =>
+      _selectedCoordinateSystem ?? field.coordinateSystem;
 
   final TransformationController transformController =
       TransformationController();
@@ -316,23 +330,17 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
     required super.preferences,
     required super.topic,
     String? fieldGame,
-    bool showOtherObjects = true,
-    bool showTrajectories = true,
-    double robotWidthMeters = 0.85,
-    double robotLengthMeters = 0.85,
-    double fieldRotation = 0.0,
-    Color robotColor = Colors.red,
-    Color trajectoryColor = Colors.white,
-    bool showRobotOutsideWidget = true,
+    CoordinateSystem? coordinateSystem,
+    this._showOtherObjects = true,
+    this._showTrajectories = true,
+    this._robotWidthMeters = 0.85,
+    this._robotLengthMeters = 0.85,
+    this._fieldRotation = 0.0,
+    this._robotColor = Colors.red,
+    this._trajectoryColor = Colors.white,
+    this._showRobotOutsideWidget = true,
     super.period,
-  }) : _showTrajectories = showTrajectories,
-       _showOtherObjects = showOtherObjects,
-       _robotWidthMeters = robotWidthMeters,
-       _robotLengthMeters = robotLengthMeters,
-       _fieldRotation = fieldRotation,
-       _robotColor = robotColor,
-       _trajectoryColor = trajectoryColor,
-       _showRobotOutsideWidget = showRobotOutsideWidget,
+  }) : _selectedCoordinateSystem = coordinateSystem,
        super() {
     _fieldGame = fieldGame ?? _fieldGame;
 
@@ -349,6 +357,11 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
     required Map<String, dynamic> jsonData,
   }) : super.fromJson(jsonData: jsonData) {
     _fieldGame = tryCast(jsonData['field_game']) ?? _fieldGame;
+    if (jsonData['coordinate_system'] is String) {
+      _selectedCoordinateSystem = CoordinateSystem.fromJson(
+        jsonData['coordinate_system'],
+      );
+    }
 
     _robotWidthMeters = tryCast(jsonData['robot_width']) ?? 0.85;
     _robotLengthMeters =
@@ -433,6 +446,9 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
   Map<String, dynamic> toJson() => {
     ...super.toJson(),
     'field_game': _fieldGame,
+    if (_selectedCoordinateSystem != null &&
+        _selectedCoordinateSystem != CoordinateSystem.unknown)
+      'coordinate_system': _selectedCoordinateSystem!.jsonKey,
     'robot_width': _robotWidthMeters,
     'robot_length': _robotLengthMeters,
     'show_other_objects': _showOtherObjects,
@@ -494,7 +510,7 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
         ),
       ),
     ),
-    DialogDropdownChooser<String?>(
+    FieldChooser(
       onSelectionChanged: (value) async {
         if (value == null) {
           return;
@@ -515,8 +531,21 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
 
         refresh();
       },
-      choices: FieldImages.fields.map((e) => e.game).toList(),
+      choices: FieldImages.fields,
       initialValue: _field.game,
+    ),
+    const SizedBox(height: 5),
+    const Text('Coordinate System'),
+    DialogDropdownChooser<CoordinateSystem>(
+      choices: CoordinateSystem.values,
+      initialValue: selectedCoordinateSystem ?? CoordinateSystem.unknown,
+      nameMap: (value) => value.displayName,
+      onSelectionChanged: (system) {
+        if (system == CoordinateSystem.unknown) {
+          system = null;
+        }
+        selectedCoordinateSystem = system;
+      },
     ),
     const SizedBox(height: 5),
     Row(
@@ -668,8 +697,7 @@ class FieldWidgetModel extends MultiTopicNTWidgetModel {
       children: [
         Tooltip(
           waitDuration: const Duration(milliseconds: 100),
-          message:
-              'If turned on, the robot will be able to drive off the field and remain visible.\nIf turned off, a circular indicator will be visible when the robot goes off the field.',
+          message: 'If turned on, the robot will be able to drive off the field and remain visible.\nIf turned off, a circular indicator will be visible when the robot goes off the field.',
           child: Icon(Icons.help),
         ),
         const SizedBox(width: 5),

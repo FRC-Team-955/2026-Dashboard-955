@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:material_ui/material_ui.dart';
 
 import 'package:elastic_dashboard/services/ip_address_util.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
@@ -42,6 +43,7 @@ class SettingsDialog extends StatefulWidget {
   final FutureOr<void> Function(String? data)? onIPAddressChanged;
   final FutureOr<void> Function(String? data)? onTeamNumberChanged;
   final void Function(IPAddressMode mode)? onIPAddressModeChanged;
+  final FutureOr<void> Function(NTServerTarget mode)? onNTTargetServerChanged;
   final void Function(Color color)? onColorChanged;
   final void Function(bool value)? onGridToggle;
   final FutureOr<void> Function(String? gridSize)? onGridSizeChanged;
@@ -63,6 +65,7 @@ class SettingsDialog extends StatefulWidget {
     required this.preferences,
     this.onTeamNumberChanged,
     this.onIPAddressModeChanged,
+    this.onNTTargetServerChanged,
     this.onIPAddressChanged,
     this.onColorChanged,
     this.onGridToggle,
@@ -121,7 +124,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: SingleChildScrollView(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxHeight: 250),
+                        constraints: const BoxConstraints(maxHeight: 320),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -281,12 +284,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
           child: ValueListenableBuilder(
             valueListenable: widget.ntConnection.dsConnected,
             builder: (context, connected, child) {
-              int addressModeIndex =
+              int addressModeID =
                   widget.preferences.getInt(PrefKeys.ipAddressMode) ??
-                  Defaults.ipAddressMode.index;
+                  Defaults.ipAddressMode.id;
               bool canEditIP =
-                  addressModeIndex == IPAddressMode.custom.index ||
-                  (addressModeIndex == IPAddressMode.driverStation.index &&
+                  addressModeID == IPAddressMode.custom.id ||
+                  (addressModeID == IPAddressMode.driverStation.id &&
                       !connected);
               return DialogTextInput(
                 enabled: canEditIP,
@@ -321,7 +324,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               setState(() {});
             },
             choices: IPAddressMode.values,
-            initialValue: IPAddressMode.fromIndex(
+            initialValue: IPAddressMode.fromID(
               widget.preferences.getInt(PrefKeys.ipAddressMode),
             ),
           ),
@@ -442,6 +445,43 @@ class _SettingsDialogState extends State<SettingsDialog> {
     const Align(
       alignment: Alignment.topLeft,
       child: Text('Network Tables Settings'),
+    ),
+    const SizedBox(height: 5),
+    Row(
+      children: [
+        Tooltip(
+          waitDuration: const Duration(milliseconds: 100),
+          message: '''
+There are 2 Network Tables servers on the SystemCore:
+
+Robot Code - The Network Tables server displaying data from the robot code.
+SystemCore Internal - The Network Tables server displaying internal data from the SystemCore (RAM, CPU, etc).''',
+          child: Icon(Icons.help_outline),
+        ),
+        const SizedBox(width: 5),
+        const Text('Target Server'),
+        const SizedBox(width: 5),
+        Flexible(
+          child: DialogDropdownChooser<NTServerTarget>(
+            onSelectionChanged: (mode) async {
+              if (mode == null) {
+                return;
+              }
+
+              await widget.onNTTargetServerChanged?.call(mode);
+
+              setState(() {});
+            },
+            choices: NTServerTarget.values,
+            initialValue:
+                NTServerTarget.fromIndex(
+                  widget.preferences.getInt(PrefKeys.ntTargetServer),
+                ) ??
+                Defaults.targetServer,
+            nameMap: (e) => e.name,
+          ),
+        ),
+      ],
     ),
     const SizedBox(height: 5),
     Flexible(

@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:dot_cast/dot_cast.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:collection/collection.dart';
@@ -14,6 +13,8 @@ import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:material_ui/material_ui.dart';
 
 import 'package:elastic_dashboard/pages/dashboard/add_widget_dialog.dart';
 import 'package:elastic_dashboard/pages/dashboard/dashboard_page_footer.dart';
@@ -46,13 +47,11 @@ import 'package:window_manager/window_manager.dart'
 enum LayoutDownloadMode {
   overwrite(
     name: 'Overwrite',
-    description:
-        'Keeps existing tabs that are not defined in the remote layout. Any tabs that are defined in the remote layout will be overwritten locally.',
+    description: 'Keeps existing tabs that are not defined in the remote layout. Any tabs that are defined in the remote layout will be overwritten locally.',
   ),
   merge(
     name: 'Merge',
-    description:
-        'Merge the downloaded layout with the existing one. If a new widget cannot be properly placed, it will not be added.',
+    description: 'Merge the downloaded layout with the existing one. If a new widget cannot be properly placed, it will not be added.',
   ),
   reload(
     name: 'Full Reload',
@@ -192,31 +191,38 @@ abstract class DashboardPageViewModel extends ChangeNotifier {
     );
     robotNotificationListener.listen();
 
-    ntConnection.dsClientConnect(
-      onIPAnnounced: (ip) async {
-        if (preferences.getInt(PrefKeys.ipAddressMode) !=
-            IPAddressMode.driverStation.index) {
-          return;
-        }
+    ntConnection.dsClientConnect();
 
-        if (preferences.getString(PrefKeys.ipAddress) != ip) {
-          await preferences.setString(PrefKeys.ipAddress, ip);
-        } else {
-          return;
-        }
+    ntConnection.dsIpAddress.addListener(() async {
+      String? ip = ntConnection.dsIpAddress.value;
 
-        ntConnection.changeIPAddress(ip);
-      },
-      onDriverStationDockChanged: (docked) {
-        if ((preferences.getBool(PrefKeys.autoResizeToDS) ??
-                Defaults.autoResizeToDS) &&
-            docked) {
-          onDriverStationDocked();
-        } else {
-          onDriverStationUndocked();
-        }
-      },
-    );
+      if (ip == null) return;
+
+      if (preferences.getInt(PrefKeys.ipAddressMode) !=
+          IPAddressMode.driverStation.id) {
+        return;
+      }
+
+      if (preferences.getString(PrefKeys.ipAddress) != ip) {
+        await preferences.setString(PrefKeys.ipAddress, ip);
+      } else {
+        return;
+      }
+
+      ntConnection.changeIPAddress(ip);
+    });
+
+    ntConnection.dsHeight.addListener(() {
+      int? height = ntConnection.dsHeight.value;
+
+      if ((preferences.getBool(PrefKeys.autoResizeToDS) ??
+              Defaults.autoResizeToDS) &&
+          height != null) {
+        onDriverStationDocked(height);
+      } else {
+        onDriverStationUndocked();
+      }
+    });
 
     ntConnection.addConnectedListener(() {
       for (TabGridModel grid in tabData.map((e) => e.tabGrid)) {
@@ -309,7 +315,9 @@ abstract class DashboardPageViewModel extends ChangeNotifier {
         description: const Text('A new update is available!'),
         action: TextButton(
           onPressed: () async {
-            Uri url = Uri.parse(Settings.releasesLink);
+            Uri url = Uri.parse(
+              '${Settings.repositoryLink}/releases/tag/v${updateResponse.latestVersion!}',
+            );
 
             if (await canLaunchUrl(url)) {
               await launchUrl(url);
@@ -431,9 +439,11 @@ abstract class DashboardPageViewModel extends ChangeNotifier {
 
   Future<void> changeIPAddressMode(IPAddressMode mode) async {}
 
+  Future<void> changeNTTargetServer(NTServerTarget mode) async {}
+
   Future<void> updateIPAddress(String newIPAddress) async {}
 
-  Future<void> onDriverStationDocked() async {}
+  Future<void> onDriverStationDocked(int dsHeight) async {}
 
   Future<void> onDriverStationUndocked() async {}
 
@@ -737,7 +747,7 @@ class _DashboardPageState extends State<DashboardPage>
       HotKey(LogicalKeyboardKey.keyK, modifiers: [KeyModifier.control]),
       callback: () {
         if (preferences.getInt(PrefKeys.ipAddressMode) ==
-            IPAddressMode.driverStation.index) {
+            IPAddressMode.driverStation.id) {
           return;
         }
         model.updateIPAddress(
@@ -756,7 +766,7 @@ class _DashboardPageState extends State<DashboardPage>
       ),
       callback: () {
         if (preferences.getInt(PrefKeys.ipAddressMode) ==
-            IPAddressMode.localhost.index) {
+            IPAddressMode.localhost.id) {
           return;
         }
         widget.model.changeIPAddressMode(IPAddressMode.localhost);

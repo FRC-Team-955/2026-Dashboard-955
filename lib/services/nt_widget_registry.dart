@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'package:dot_cast/dot_cast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:material_ui/material_ui.dart';
 
 import 'package:elastic_dashboard/services/log.dart';
 import 'package:elastic_dashboard/services/nt4_client.dart';
@@ -12,13 +12,13 @@ import 'package:elastic_dashboard/widgets/draggable_containers/draggable_widget_
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/accelerometer.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/basic_swerve_drive.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/camera_stream.dart';
-import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/combo_box_chooser.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/command_scheduler.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/command_widget.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/differential_drive.dart';
+import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/driver_station_info.dart';
+import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/dropdown_chooser.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/encoder_widget.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/field_widget.dart';
-import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/fms_info.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/gyro.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/motor_controller.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/network_alerts.dart';
@@ -47,22 +47,20 @@ import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/toggle_button.
 import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/toggle_switch.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/voltage_view.dart';
 
-typedef NTModelJsonProvider<T extends NTWidgetModel> =
-    T Function({
-      required Map<String, dynamic> jsonData,
-      required NTConnection ntConnection,
-      required SharedPreferences preferences,
-    });
+typedef NTModelJsonProvider<T extends NTWidgetModel> = T Function({
+  required Map<String, dynamic> jsonData,
+  required NTConnection ntConnection,
+  required SharedPreferences preferences,
+});
 
-typedef NTModelProvider<T extends NTWidgetModel> =
-    T Function({
-      required NTConnection ntConnection,
-      required SharedPreferences preferences,
-      required String topic,
-      NT4Type? dataType,
-      double? period,
-      NT4StructMeta? ntStructMeta,
-    });
+typedef NTModelProvider<T extends NTWidgetModel> = T Function({
+  required NTConnection ntConnection,
+  required SharedPreferences preferences,
+  required String topic,
+  NT4Type? dataType,
+  double? period,
+  NT4StructMeta? ntStructMeta,
+});
 
 typedef MultiTopicNTModelProvider<T extends MultiTopicNTWidgetModel> =
     T Function({
@@ -194,15 +192,6 @@ class NTWidgetRegistry {
     );
 
     registerMultiTopic(
-      name: ComboBoxChooser.widgetType,
-      aliases: {'String Chooser'},
-      model: ComboBoxChooserModel.new,
-      widget: ComboBoxChooser.new,
-      fromJson: ComboBoxChooserModel.fromJson,
-      minHeight: _normalSize * 0.85,
-    );
-
-    registerMultiTopic(
       name: CommandSchedulerWidget.widgetType,
       model: CommandSchedulerModel.new,
       widget: CommandSchedulerWidget.new,
@@ -236,6 +225,26 @@ class NTWidgetRegistry {
     );
 
     registerMultiTopic(
+      name: DriverStationInfo.widgetType,
+      aliases: {'DriverStation', 'FMSInfo'},
+      model: DriverStationInfoModel.new,
+      widget: DriverStationInfo.new,
+      fromJson: DriverStationInfoModel.fromJson,
+      minWidth: _normalSize * 3,
+      minHeight: _normalSize,
+      defaultWidth: 3,
+    );
+
+    registerMultiTopic(
+      name: DropdownChooser.widgetType,
+      aliases: {'Selectable', 'ComboBox Chooser', 'String Chooser'},
+      model: DropdownChooserModel.new,
+      widget: DropdownChooser.new,
+      fromJson: DropdownChooserModel.fromJson,
+      minHeight: _normalSize * 0.85,
+    );
+
+    registerMultiTopic(
       name: EncoderWidget.widgetType,
       aliases: {'Quadrature Encoder'},
       model: EncoderModel.new,
@@ -256,16 +265,6 @@ class NTWidgetRegistry {
       minHeight: _normalSize * 2,
       defaultWidth: 2,
       defaultHeight: 2,
-    );
-
-    registerMultiTopic(
-      name: FMSInfo.widgetType,
-      model: FMSInfoModel.new,
-      widget: FMSInfo.new,
-      fromJson: FMSInfoModel.fromJson,
-      minWidth: _normalSize * 3,
-      minHeight: _normalSize,
-      defaultWidth: 3,
     );
 
     registerMultiTopic(

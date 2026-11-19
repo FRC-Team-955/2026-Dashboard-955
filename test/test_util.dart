@@ -1,24 +1,23 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:elastic_dashboard/services/ds_interop.dart';
+import 'package:material_ui/material_ui.dart';
+
 import 'package:elastic_dashboard/services/nt4_client.dart';
 import 'package:elastic_dashboard/services/nt4_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/struct_schemas/nt_struct.dart';
 import 'package:elastic_dashboard/services/update_checker.dart';
+
 import 'test_util.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<NTConnection>(),
   MockSpec<NT4Client>(),
   MockSpec<NT4Subscription>(),
-  MockSpec<DSInteropClient>(),
 ])
 MockNTConnection createMockOfflineNT4() {
   HttpOverrides.global = null;
@@ -45,6 +44,8 @@ MockNTConnection createMockOfflineNT4() {
 
   when(mockNT4Connection.dsConnected).thenReturn(ValueNotifier(false));
   when(mockNT4Connection.isDSConnected).thenReturn(false);
+  when(mockNT4Connection.dsHeight).thenReturn(ValueNotifier(null));
+  when(mockNT4Connection.dsIpAddress).thenReturn(ValueNotifier(null));
 
   when(mockNT4Connection.latencyStream()).thenAnswer((_) => Stream.value(0));
 
@@ -78,12 +79,12 @@ MockNTConnection createMockOnlineNT4({
 
   virtualTopics ??= [
     NT4Topic(
-      name: '/SmartDashboard/Test Value 1',
+      name: '/Telemetry/Test Value 1',
       type: NT4Type.int(),
       properties: {},
     ),
     NT4Topic(
-      name: '/SmartDashboard/Test Value 2',
+      name: '/Telemetry/Test Value 2',
       type: NT4Type.float(),
       properties: {},
     ),
@@ -128,6 +129,8 @@ MockNTConnection createMockOnlineNT4({
 
   when(mockNT4Connection.dsConnected).thenReturn(ValueNotifier(true));
   when(mockNT4Connection.isDSConnected).thenReturn(true);
+  when(mockNT4Connection.dsHeight).thenReturn(ValueNotifier(null));
+  when(mockNT4Connection.dsIpAddress).thenReturn(ValueNotifier(null));
 
   when(mockNT4Connection.latencyStream()).thenAnswer((_) => Stream.value(0));
 

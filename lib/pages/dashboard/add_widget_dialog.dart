@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-
 import 'package:popover/popover.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:material_ui/material_ui.dart';
+
 import 'package:elastic_dashboard/services/nt_connection.dart';
+import 'package:elastic_dashboard/widgets/camera_stream_list.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_text_input.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_toggle_switch.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/layout_drag_tile.dart';
@@ -82,7 +83,7 @@ class _AddWidgetDialogState extends State<AddWidgetDialog> {
       child: Card(
         margin: const EdgeInsets.all(10.0),
         child: DefaultTabController(
-          length: 2,
+          length: 3,
           child: Column(
             children: [
               const Icon(Icons.drag_handle, color: Colors.grey),
@@ -92,8 +93,10 @@ class _AddWidgetDialogState extends State<AddWidgetDialog> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const TabBar(
+                labelPadding: EdgeInsets.symmetric(horizontal: 12),
                 tabs: [
                   Tab(text: 'Network Tables'),
+                  Tab(text: 'Cameras'),
                   Tab(text: 'Layouts'),
                 ],
               ),
@@ -111,6 +114,15 @@ class _AddWidgetDialogState extends State<AddWidgetDialog> {
                       onDragUpdate: widget.onNTDragUpdate,
                       onDragEnd: widget.onNTDragEnd,
                       onRemoveWidget: () => onRemove(widget.grid),
+                    ),
+                    CameraStreamList(
+                      ntConnection: widget.ntConnection,
+                      preferences: widget.preferences,
+                      gridIndex: widget.gridIndex,
+                      onDragUpdate: widget.onNTDragUpdate,
+                      onDragEnd: widget.onNTDragEnd,
+                      onRemoveWidget: () => onRemove(widget.grid),
+                      searchQuery: _searchQuery,
                     ),
                     ListView(
                       children: [
@@ -137,22 +149,27 @@ class _AddWidgetDialogState extends State<AddWidgetDialog> {
                         showPopover(
                           context: context,
                           direction: PopoverDirection.top,
-                          transitionDuration: const Duration(
-                            milliseconds: 100,
+                          style: PopoverStyle(
+                            transitionDuration: const Duration(
+                              milliseconds: 100,
+                            ),
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.surface,
+                            barrierColor: Colors.transparent,
                           ),
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.surface,
-                          barrierColor: Colors.transparent,
                           width: 200.0,
-                          bodyBuilder: (context) => Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DialogToggleSwitch(
-                              label: 'Hide Metadata',
-                              initialValue: _hideMetadata,
-                              onToggle: (value) {
-                                setState(() => _hideMetadata = value);
-                              },
+                          bodyBuilder: (context) => Material(
+                            type: MaterialType.transparency,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: DialogToggleSwitch(
+                                label: 'Hide Metadata',
+                                initialValue: _hideMetadata,
+                                onToggle: (value) {
+                                  setState(() => _hideMetadata = value);
+                                },
+                              ),
                             ),
                           ),
                         );
